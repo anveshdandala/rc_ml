@@ -1,9 +1,10 @@
 import joblib
 
 try:
-    model = joblib.load("models/resume_classifier.pk1")
+    model = joblib.load("models/resume_pipeline.pkl")
+    
 except Exception as e:
     print(e)
 
-def predict_role(features):
-    return model.predict(features)[0]
+def predict_role(text:str):
+    return model.predict([text])[0]
