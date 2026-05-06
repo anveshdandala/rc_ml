@@ -1,6 +1,8 @@
+import traceback
 from fastapi import FastAPI
 from pydantic import BaseModel
 from pipeline.predict import predict_resume
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 

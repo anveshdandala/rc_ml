@@ -16,14 +16,14 @@ X_train, X_test, y_train, y_test = train_test_split(texts, labels, test_size=0.2
 
 pipeline = Pipeline([
     ('tfidf', TfidfVectorizer(
-        stop_words='english',      # Remove words like 'the', 'is', 'and'
-        max_df=0.85,               # Ignore words that appear in >85% of resumes (they don't help differentiate)
-        min_df=3,                  # Ignore rare words that appear in <3 resumes (prevents overfitting to typos)
-        ngram_range=(1, 2)         # Capture 1-word and 2-word phrases (e.g., "machine learning", "data science")
+        stop_words='english',      
+        max_df=0.85,               
+        min_df=3,                  
+        ngram_range=(1, 2)         
     )),
     ('clf', LogisticRegression(
-        class_weight='balanced',   # Penalize mistakes on rare job categories heavily
-        max_iter=1000              # Give the math more time to converge
+        class_weight='balanced',   
+        max_iter=1000              
     ))
 ])
 

@@ -12,9 +12,10 @@ pipeline  = joblib.load("models/resume_pipeline.pkl")
 tfidf     = pipeline.named_steps["tfidf"]
 clf       = pipeline.named_steps["clf"]
 
-df        = pd.read_csv("./data/Resume.csv").dropna(subset=["Resume_str", "Category"])
-texts     = df["Resume_str"]
+df        = pd.read_csv("./data/gpt_dataset.csv").dropna(subset=["Category", "Resume"])
+
 labels    = df["Category"]
+texts     = df["Resume"]
 
 _, X_test, _, y_test = train_test_split(texts, labels, test_size=0.2, random_state=42)
 y_pred = pipeline.predict(X_test)
