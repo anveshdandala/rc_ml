@@ -1,19 +1,21 @@
 import logging
-from .preprocess import clean_text, generate_ngrams
+from .preprocess import clean_text, generate_ngrams, split_resume_sections, clean_text_structure
 from .feature_eng import transform
 from .classifier import predict_role
 from .extractor import extract_skills_from_jd, estimate_experience,extract_skills_rule_based #extract_skills_from_resume
 from sklearn.metrics.pairwise import cosine_similarity
 from .compute_similarity import compute_match_score, compute_ats_score
 from .eval import score_resume_section
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 
 def predict_resume(text: str, jobDescription:str):
+    print("original text", text)
+    structured_text = clean_text_structure(text)
+
+    sections = split_resume_sections(structured_text)
+    print("sections", sections)
+
     cleaned_txt = clean_text(text)
     cleaned_jd = clean_text(jobDescription)
-    
     words = cleaned_txt.split()
     phrases = generate_ngrams(words)
 
@@ -23,15 +25,18 @@ def predict_resume(text: str, jobDescription:str):
     user_skills = extract_skills_rule_based(phrases)
     experience = estimate_experience(cleaned_txt)
 
-    # quantified_score  = score_resume_section(cleaned_txt, "quantified achievements and metrics")
-    # action_verb_score = score_resume_section(cleaned_txt, "strong action verbs and active voice")
-    # structure_score   = score_resume_section(cleaned_txt, "clear professional structure and sections")
-    # contact_score     = score_resume_section(cleaned_txt, "complete contact information")
+    quantified_score  = score_resume_section(cleaned_txt, "quantified achievements and metrics")
+    action_verb_score = score_resume_section(cleaned_txt, "strong action verbs and active voice")
+    structure_score   = score_resume_section(cleaned_txt, "clear professional structure and sections")
+    contact_score     = score_resume_section(cleaned_txt, "complete contact information")
+    
+    resume_quality_score = (
+    quantified_score * 0.30 +
+    action_verb_score * 0.25 +
+    structure_score * 0.25 +
+    contact_score * 0.20
+    )
 
-    # print(f"quantified_score: {quantified_score}")
-    # print(f"action_verb_score: {action_verb_score}")
-    # print(f"structure_score: {structure_score}")
-    # print(f"contact_score: {contact_score}")
     matched_score, matched_skills, missing_skills = compute_match_score(cleaned_txt,roleByText, user_skills, jd_skils, experience, cleaned_jd)
     ats_evaluation = compute_ats_score(text, jobDescription)
 

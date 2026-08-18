@@ -4,6 +4,10 @@ from pydantic import BaseModel
 from pipeline.predict import predict_resume
 from fastapi.responses import JSONResponse
 
+# http://127.0.0.1:8000/
+# fastapi run app.py
+
+
 app = FastAPI()
 
 class ResumeInput(BaseModel):
